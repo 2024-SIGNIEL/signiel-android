@@ -54,10 +54,10 @@ fun SignInScreen(navController: NavController) {
             modifier = Modifier.padding(top = 4.dp),
             text = buildAnnotatedString {
                 withStyle(SpanStyle(color = Colors.Main)) {
-                    append("Fino")
+                    append("이메일")
                 }
                 withStyle(SpanStyle(color = Colors.Black)) {
-                    append("에 로그인하세요")
+                    append("로 로그인하세요")
                 }
             },
             style = Typography.Medium.copy(
