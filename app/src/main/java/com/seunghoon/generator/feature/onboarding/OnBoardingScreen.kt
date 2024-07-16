@@ -103,7 +103,7 @@ fun OnBoardingScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         SignielButton(
             text = "다음",
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(NavigationRoute.Auth.SIGN_IN) },
         )
         Spacer(modifier = Modifier.height(28.dp))
         Text(

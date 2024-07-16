@@ -1,5 +1,6 @@
 package com.seunghoon.designsystem.ui
 
+import android.graphics.Paint.Align
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
 
@@ -87,7 +89,7 @@ fun SignielTextField(
                 maxLines = 3,
                 value = value,
                 onValueChange = onValueChange,
-                // textStyle = SavageTypography.Body3,
+                textStyle = Typography.Medium.copy(fontSize = 18.sp),
                 singleLine = true,
                 enabled = enable,
                 decorationBox = { it() },
@@ -102,7 +104,7 @@ fun SignielTextField(
                     ),
                 text = hint,
                 color = Colors.Gray,
-                style = Typography.Medium,
+                style = Typography.Medium.copy(fontSize = 18.sp),
             )
         }
         if (isHaveBottomLine) Divider(
@@ -154,7 +156,10 @@ fun SignielBoxTextField(
             Text(
                 modifier = Modifier.alpha(alpha),
                 text = hint,
-                style = Typography.Medium.copy(fontWeight = FontWeight.Bold),
+                style = Typography.Medium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                ),
                 color = Colors.Gray,
             )
         }

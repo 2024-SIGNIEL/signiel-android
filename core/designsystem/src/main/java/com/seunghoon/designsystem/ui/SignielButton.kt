@@ -1,11 +1,13 @@
 package com.seunghoon.designsystem.ui
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,11 +39,17 @@ fun SignielButton(
     val colors = ButtonDefaults.buttonColors(
         containerColor = when {
             isAbleClick -> if (isPressed) Colors.Main else Colors.Main
-            else -> if (isPressed) Colors.Main else Colors.Main
+            else -> if (isPressed) Colors.Main_Disabled else Colors.Main_Disabled
         },
         contentColor = Color.White,
-        disabledContainerColor = Colors.Main,
-        disabledContentColor = Colors.Main,
+        disabledContainerColor = Colors.Main_Disabled,
+        disabledContentColor = Colors.Main_Disabled,
+    )
+
+    val padding by animateDpAsState(
+        targetValue = if (isKeyShow) 0.dp
+        else 0.dp,
+        label = "",
     )
 
     val scale by animateFloatAsState(
@@ -71,7 +79,8 @@ fun SignielButton(
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
-            },
+            }
+            .padding(horizontal = padding),
     ) {
         Text(
             text = text,
