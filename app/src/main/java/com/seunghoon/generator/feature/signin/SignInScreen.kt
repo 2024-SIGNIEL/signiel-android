@@ -7,20 +7,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.seunghoon.designsystem.ui.SignielBoxTextField
+import com.seunghoon.designsystem.ui.SignielButton
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
 
 @Composable
 fun SignInScreen(navController: NavController) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,5 +65,39 @@ fun SignInScreen(navController: NavController) {
                 fontWeight = FontWeight.Normal,
             )
         )
+        Spacer(modifier = Modifier.height(40.dp))
+        SignInInputs(
+            email = email,
+            onEmailChange = { email = it },
+            password = password,
+            onPasswordChange = { password = it },
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        SignielButton(
+            modifier = Modifier.padding(bottom = 16.dp),
+            text = "다음",
+            onClick = { /*TODO*/ },
+        )
     }
+}
+
+@Composable
+private fun SignInInputs(
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+) {
+    SignielBoxTextField(
+        value = email,
+        onValueChange = onEmailChange,
+        hint = "이메일",
+    )
+    Spacer(modifier = Modifier.height(36.dp))
+    SignielBoxTextField(
+        value = password,
+        onValueChange = onPasswordChange,
+        hint = "비밀번호",
+        isPassword = true,
+    )
 }

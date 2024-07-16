@@ -3,6 +3,7 @@ package com.seunghoon.designsystem.ui
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.seunghoon.designsystem.ui.theme.Colors
@@ -110,10 +114,11 @@ fun SignielTextField(
 }
 
 @Composable
-internal fun SavageBoxTextField(
+fun SignielBoxTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    isPassword: Boolean = false,
     hint: String,
 ) {
     var focused by remember { mutableStateOf(false) }
@@ -126,25 +131,33 @@ internal fun SavageBoxTextField(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(4.dp))
-            //.background(SavageColor.Gray10)
+            .border(
+                width = 1.dp,
+                color = Colors.Gray,
+                shape = RoundedCornerShape(8.dp),
+            )
             .padding(
                 horizontal = 16.dp,
-                vertical = 10.dp,
+                vertical = 14.dp,
             )
             .onFocusChanged {
                 focused = it.hasFocus
             },
         value = value,
         onValueChange = onValueChange,
+        textStyle = Typography.Medium,
+        visualTransformation = if (isPassword) PasswordVisualTransformation()
+        else VisualTransformation.None,
     ) { innerTextField ->
-        innerTextField()
-        Text(
-            modifier = Modifier.alpha(alpha),
-            text = hint,
-            /*style = SavageTypography.Body2,
-            color = SavageColor.Gray40,*/
-        )
-
+        Box {
+            innerTextField()
+            Text(
+                modifier = Modifier.alpha(alpha),
+                text = hint,
+                style = Typography.Medium.copy(fontWeight = FontWeight.Bold),
+                color = Colors.Gray,
+            )
+        }
     }
 }
 
