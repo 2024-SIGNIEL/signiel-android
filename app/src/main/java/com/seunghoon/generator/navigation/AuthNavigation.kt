@@ -13,7 +13,9 @@ internal fun NavGraphBuilder.auth(navController: NavController) {
         startDestination = NavigationRoute.Auth.SPLASH,
     ) {
         composable(NavigationRoute.Auth.SPLASH) {
-            SplashScreen(navController = navController)
+            SplashScreen(
+                navController = navController,
+            )
         }
         composable(NavigationRoute.Auth.SIGN_IN) {
             SignInScreen(navController = navController)
