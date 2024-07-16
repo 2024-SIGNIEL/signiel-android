@@ -5,5 +5,6 @@ buildscript {
     }
     dependencies {
         classpath(libs.jetbrains.kotlin.gradle.plugin)
+        classpath(libs.kotlin.serialization)
     }
 }
