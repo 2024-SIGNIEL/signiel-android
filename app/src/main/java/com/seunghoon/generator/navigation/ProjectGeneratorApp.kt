@@ -12,9 +12,7 @@ internal fun ProjectGeneratorApp() {
     val navController = rememberNavController()
 
     NavHost(
-        modifier = Modifier
-            .navigationBarsPadding()
-            .statusBarsPadding(),
+        modifier = Modifier,
         navController = navController,
         startDestination = NavigationRoute.Auth.route,
     ) {
