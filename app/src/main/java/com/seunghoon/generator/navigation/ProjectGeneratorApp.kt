@@ -18,7 +18,7 @@ internal fun ProjectGeneratorApp() {
         navController = navController,
         startDestination = NavigationRoute.Auth.route,
     ) {
-        auth()
+        auth(navController = navController)
         main()
     }
 }
