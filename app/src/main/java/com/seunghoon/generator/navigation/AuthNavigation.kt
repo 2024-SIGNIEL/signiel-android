@@ -31,14 +31,7 @@ internal fun NavGraphBuilder.auth(navController: NavController) {
         composable(NavigationRoute.Auth.ON_BOARDING) {
             OnBoardingScreen(navController = navController)
         }
-        composable(
-            route = NavigationRoute.Auth.INPUT_NAME,
-            arguments = listOf(
-                navArgument(NavigationRoute.Auth.SIGN_UP_DATA) {
-                    type = NavType.StringType
-                },
-            )
-        ) {
+        composable(NavigationRoute.Auth.INPUT_NAME) {
             InputNameScreen(
                 navController = navController,
                 signUpData = SignUpData(),
