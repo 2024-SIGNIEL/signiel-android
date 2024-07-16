@@ -11,5 +11,6 @@ object Colors {
     val Gray2 = Color(0xFFE8E8E8)
     val Main = Color(0xFF3F69FF)
     val Main_Pressed = Color(0xFF1145FF)
+    val Main_Disabled = Color(0xFF89A3FF)
     val Error = Color(0xFFD10000)
 }

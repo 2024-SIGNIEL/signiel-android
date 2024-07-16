@@ -2,6 +2,7 @@
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
+    id(libs.plugins.kotlinx.serialization.get().pluginId)
 }
 
 android {
@@ -60,6 +61,9 @@ dependencies {
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.navigation)
     api(libs.io.insert.koin.android)
+    implementation("com.airbnb.android:lottie-compose:6.4.1")
+
+    implementation(libs.kotlinx.serialization.json)
 
     testApi(libs.junit)
     androidTestApi(libs.androidx.junit)
