@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.seunghoon.generator.feature.onboarding.OnBoardingScreen
 import com.seunghoon.generator.feature.signin.SignInScreen
 import com.seunghoon.generator.feature.splash.SplashScreen
 
@@ -17,6 +18,9 @@ internal fun NavGraphBuilder.auth(navController: NavController) {
         }
         composable(NavigationRoute.Auth.SIGN_IN) {
             SignInScreen(navController = navController)
+        }
+        composable(NavigationRoute.Auth.ON_BOARDING) {
+            OnBoardingScreen(navController = navController)
         }
     }
 }

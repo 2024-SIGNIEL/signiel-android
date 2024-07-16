@@ -60,6 +60,7 @@ dependencies {
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.navigation)
     api(libs.io.insert.koin.android)
+    implementation("com.airbnb.android:lottie-compose:6.4.1")
 
     testApi(libs.junit)
     androidTestApi(libs.androidx.junit)
