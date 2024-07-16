@@ -27,6 +27,7 @@ import com.seunghoon.designsystem.ui.SignielBoxTextField
 import com.seunghoon.designsystem.ui.SignielButton
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
+import com.seunghoon.generator.navigation.NavigationRoute
 
 @Composable
 fun SignInScreen(navController: NavController) {
@@ -81,7 +82,7 @@ fun SignInScreen(navController: NavController) {
         SignielButton(
             modifier = Modifier.padding(bottom = 16.dp),
             text = "다음",
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(NavigationRoute.Main.HOME) },
         )
     }
 }

@@ -34,7 +34,6 @@ fun BottomNavigationBar(
     var selectedItem by remember { mutableIntStateOf(0) }
 
     Scaffold(
-        modifier = Modifier.navigationBarsPadding(),
         bottomBar = {
             BottomNavigation(
                 backgroundColor = Color.White
@@ -58,6 +57,7 @@ fun BottomNavigationBar(
                     },
                     label = {
                         Text(
+                            modifier = Modifier.navigationBarsPadding(),
                             text = "지출",
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 12.sp,
