@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 
 object Keys {
     const val MAX_PAY = "max_pay"
+    const val PIN_MONEY = "pin_money"
 }
 
 object SharedPreferenceManager {

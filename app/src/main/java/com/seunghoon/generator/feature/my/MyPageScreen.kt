@@ -14,11 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -46,6 +46,7 @@ import com.seunghoon.designsystem.ui.SignielTextField
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.generator.Keys
 import com.seunghoon.generator.SharedPreferenceManager
+import com.seunghoon.generator.navigation.NavigationRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,15 +54,58 @@ fun MyPageScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
-    val (showSheet, onChangeShowSheet) = remember {
+    val (showPinSheet, onChangeShowPinSheet) = remember {
         mutableStateOf(false)
     }
+    val (showLimitSheet, onChangeShowLimitSheet) = remember {
+        mutableStateOf(false)
+    }
+
+    var pin by remember { mutableStateOf("") }
     var money by remember { mutableStateOf("") }
 
-
-    if (showSheet) {
+    if (showPinSheet) {
         ModalBottomSheet(
-            onDismissRequest = { onChangeShowSheet(false) }
+            onDismissRequest = { onChangeShowPinSheet(false) }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp)
+                    .padding(horizontal = 24.dp),
+            ) {
+                Text(
+                    text = "받은 용돈을 입력해주세요",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(48.dp))
+                SignielTextField(
+                    value = pin,
+                    hint = "0원",
+                    onValueChange = { pin = it },
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+                SignielButton(
+                    onClick = {
+                        onChangeShowPinSheet(false)
+                        SharedPreferenceManager.sharedPreference
+                            .edit()
+                            .putString(Keys.PIN_MONEY, pin)
+                            .commit()
+                    },
+                    text = "용돈 저장하기",
+                    isAbleClick = pin.isNotBlank()
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+    }
+
+    if (showLimitSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { onChangeShowLimitSheet(false) }
         ) {
             Column(
                 modifier = Modifier
@@ -91,8 +135,7 @@ fun MyPageScreen(
                 Spacer(modifier = Modifier.height(40.dp))
                 SignielButton(
                     onClick = {
-                        onChangeShowSheet(false)
-
+                        onChangeShowLimitSheet(false)
                         SharedPreferenceManager.sharedPreference
                             .edit()
                             .putString(Keys.MAX_PAY, money)
@@ -107,7 +150,8 @@ fun MyPageScreen(
     }
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .statusBarsPadding(),
     ) {
         Text(
             modifier = Modifier
@@ -239,7 +283,7 @@ fun MyPageScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { }
+                    .clickable { onChangeShowPinSheet(true) }
                     .padding(
                         vertical = 6.dp,
                     ),
@@ -261,7 +305,7 @@ fun MyPageScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onChangeShowSheet(true) }
+                    .clickable { onChangeShowLimitSheet(true) }
                     .padding(
                         vertical = 6.dp,
                     ),
@@ -283,7 +327,7 @@ fun MyPageScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { }
+                    .clickable { navController.navigate(NavigationRoute.Auth.ON_BOARDING) }
                     .padding(
                         vertical = 6.dp,
                     ),
