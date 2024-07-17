@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.seunghoon.designsystem.ui.theme.Colors
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 enum class CalendarColor(val value: Int) {
     RED(1),
@@ -54,6 +55,9 @@ enum class CalendarColor(val value: Int) {
 @Composable
 fun SignielCalendar(
     modifier: Modifier = Modifier,
+    calendarPayHistory: Array<Int>,
+    maxPay: Int,
+    onChanged: (maxDay: String) -> Unit,
     content: @Composable () -> Unit,
 ) {
     var currentYear by remember { mutableIntStateOf(LocalDate.now().year) }
@@ -62,9 +66,6 @@ fun SignielCalendar(
     var update by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        update = true
-    }
-    LaunchedEffect(currentMonth) {
         update = true
     }
 
@@ -85,6 +86,11 @@ fun SignielCalendar(
     val daysInCurrentMonth = daysInMonth(currentMonth, currentYear)
     val dates: List<CalendarDate> = (1..daysInCurrentMonth).map { day ->
         CalendarDate(day, currentMonth, currentYear)
+    }
+
+    LaunchedEffect(currentMonth) {
+        update = true
+        onChanged(dates.size.toString())
     }
 
     Column(
@@ -205,7 +211,6 @@ fun SignielCalendar(
                             modifier = Modifier
                                 .padding(top = 12.dp)
                                 .weight(1f)
-
                                 .clip(CircleShape)
                                 .clickable(
                                     indication = null,
@@ -217,10 +222,19 @@ fun SignielCalendar(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             // 일
+                            val sumPay = calendarPayHistory[dates.indexOf(date) + 1]
+                            val (backgroundColor, textColor) = if (sumPay == 0) Color(0xFFDBDBDB) to Color(
+                                0xFF939393
+                            )
+                            else if (sumPay > maxPay) Color(0xFFFF7272) to Colors.White
+                            else if (LocalDateTime.now()
+                                    .isAfter(LocalDateTime.parse("${date.year}-${date.year}-${date.day}T00:00:00.000000"))
+                            ) Colors.White to Colors.Black
+                            else Colors.Main to Colors.White
                             Box(
                                 modifier = Modifier
                                     .background(
-                                        color = Colors.Main,
+                                        color = backgroundColor,
                                         shape = CircleShape,
                                     )
                                     .clip(CircleShape)
@@ -232,7 +246,7 @@ fun SignielCalendar(
                                     textAlign = TextAlign.Center,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = Colors.White,
+                                    color = textColor,
                                 )
                             }
                         }
@@ -251,7 +265,11 @@ fun SignielCalendar(
 @Composable
 private fun SignielCalendarPreview() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        SignielCalendar {
+        SignielCalendar(
+            calendarPayHistory = arrayOf(0),
+            onChanged = {},
+            maxPay = 0,
+        ) {
 
         }
     }

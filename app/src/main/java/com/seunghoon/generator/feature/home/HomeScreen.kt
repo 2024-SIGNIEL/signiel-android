@@ -50,10 +50,14 @@ import androidx.navigation.NavController
 import androidx.room.Room
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
+import com.seunghoon.generator.Keys
 import com.seunghoon.generator.R
+import com.seunghoon.generator.SharedPreferenceManager
 import com.seunghoon.generator.SignielDatabase
+import com.seunghoon.generator.dao.PayDao
 import com.seunghoon.generator.entity.PayType
 import com.seunghoon.generator.ui.SignielCalendar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -88,6 +92,10 @@ fun HomeScreen(
         label = "",
         animationSpec = tween(durationMillis = 2000)
     )
+    val maxPay = SharedPreferenceManager.sharedPreference.getString(Keys.MAX_PAY, "0")?.toInt() ?: 0
+    var maxDay by remember { mutableIntStateOf(0) }
+
+
     LaunchedEffect(Unit) {
         started = true
         launch(Dispatchers.IO) {
@@ -122,7 +130,14 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
         ) {
-            SignielCalendar {
+            SignielCalendar(
+                calendarPayHistory = getCalendarPayHistory(
+                    payDao = database.getPayDao(),
+                    maxDay = maxDay,
+                ),
+                maxPay = maxPay,
+                onChanged = { maxDay = it.toInt() }
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -224,7 +239,7 @@ fun HomeScreen(
                         )
                     )
                     Text(
-                        text = "100,000원",
+                        text = "${if (maxPay == 0) 0 else DecimalFormat("#,###").format(maxPay * maxDay)}원",
                         style = TextStyle(
                             color = Colors.Gray,
                         )
@@ -234,7 +249,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
             PayCard(
                 todayPaid = todayPaid,
-                max = 10000,
+                max = maxPay,
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -382,4 +397,34 @@ fun Header(title: String) {
             )
         }
     }
+}
+
+fun getCalendarPayHistory(
+    payDao: PayDao,
+    maxDay: Int,
+): Array<Int> {
+    val array = Array(maxDay + 1) { 0 }
+    val localDateTime = LocalDateTime.now()
+    CoroutineScope(Dispatchers.IO).launch {
+        runCatching {
+            payDao.queryByMonthValue(
+                year = localDateTime.year,
+                month = localDateTime.monthValue,
+            )
+        }.onSuccess {
+            it.forEach { element ->
+                when (element.payType) {
+                    PayType.DEPOSIT -> {
+                        array[element.day.toInt()] += element.amount
+                    }
+
+                    else -> array[element.day.toInt()] -= element.amount
+                }
+            }
+        }.onFailure {
+
+        }
+    }
+
+    return array
 }

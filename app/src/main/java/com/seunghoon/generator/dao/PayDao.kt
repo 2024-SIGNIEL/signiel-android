@@ -19,4 +19,10 @@ interface PayDao {
         month: Int,
         day: Int,
     ): List<Pay>
+
+    @Query("select * from pay where year = :year and month = :month order by day asc")
+    fun queryByMonthValue(
+        year: Int,
+        month: Int,
+    ): List<Pay>
 }

@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SharedPreferenceManager.init(applicationContext)
         database =
             Room.databaseBuilder(applicationContext, SignielDatabase::class.java, "pay-database")
                 .fallbackToDestructiveMigration()
