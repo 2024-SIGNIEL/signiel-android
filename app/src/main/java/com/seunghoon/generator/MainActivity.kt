@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         database =
             Room.databaseBuilder(applicationContext, SignielDatabase::class.java, "pay-database")
+                .fallbackToDestructiveMigration()
                 .build()
         setContent {
             WindowCompat.setDecorFitsSystemWindows(window, false)

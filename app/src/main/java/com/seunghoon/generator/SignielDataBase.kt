@@ -6,7 +6,7 @@ import com.seunghoon.generator.dao.PayDao
 import com.seunghoon.generator.entity.Pay
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [Pay::class],
 )
 abstract class SignielDatabase : RoomDatabase() {

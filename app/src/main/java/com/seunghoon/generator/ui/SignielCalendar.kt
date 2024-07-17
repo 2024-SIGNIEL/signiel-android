@@ -89,7 +89,6 @@ fun SignielCalendar(
 
     Column(
         modifier = modifier
-            .height(620.dp)
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(4.dp),
@@ -219,13 +218,13 @@ fun SignielCalendar(
                         ) {
                             // 일
                             Box(
-                               modifier = Modifier
-                                   .background(
-                                       color = Colors.Main,
-                                       shape = CircleShape,
-                                   )
-                                   .clip(CircleShape)
-                                   .size(32.dp),
+                                modifier = Modifier
+                                    .background(
+                                        color = Colors.Main,
+                                        shape = CircleShape,
+                                    )
+                                    .clip(CircleShape)
+                                    .size(32.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(

@@ -8,6 +8,7 @@ import androidx.room.Room
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
 import com.seunghoon.generator.entity.Pay
+import com.seunghoon.generator.entity.PayCategory
 import com.seunghoon.generator.entity.PayType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
             context = applicationContext,
             SignielDatabase::class.java,
             "pay-database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     private val payDao: PayDao by lazy {
@@ -75,6 +76,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                             year = current.year.toString(),
                             month = current.monthValue.toString(),
                             day = current.dayOfMonth.toString(),
+                            category = PayCategory.LIFE,
                         )
                     )
                 }
