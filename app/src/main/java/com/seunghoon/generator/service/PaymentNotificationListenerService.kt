@@ -3,15 +3,25 @@ package com.seunghoon.generator.service
 import android.app.Notification
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import android.util.Log
 import androidx.room.Room
+import com.seunghoon.core.network.RequestHandler
+import com.seunghoon.core.network.ktorClient
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
+import com.seunghoon.generator.entity.GptRequest
+import com.seunghoon.generator.entity.GptResponse
 import com.seunghoon.generator.entity.Pay
 import com.seunghoon.generator.entity.PayCategory
 import com.seunghoon.generator.entity.PayType
+import io.ktor.client.call.body
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.request.url
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 
 class PaymentNotificationListenerService : NotificationListenerService() {
@@ -59,6 +69,26 @@ class PaymentNotificationListenerService : NotificationListenerService() {
 
                 val current = LocalDateTime.now()
 
+                CoroutineScope(Dispatchers.IO).launch {
+                    runCatching {
+                        RequestHandler<GptResponse>().request {
+                            ktorClient.post {
+                                url("http://0.0.0.0:8000/")
+                                setBody(
+                                    GptRequest(
+                                        prompt = use
+                                    )
+                                )
+                            }.body<GptResponse>()
+                        }
+                    }.onSuccess {
+                        withContext(Dispatchers.IO) {
+                            Log.d("TEST1",it.detail)
+                        }
+                    }.onFailure {
+                        Log.d("TEST2",it.toString())
+                    }
+                }
                 CoroutineScope(Dispatchers.IO).launch {
                     payDao.savePay(
                         Pay(
