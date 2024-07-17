@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -82,7 +83,7 @@ fun SignielCalendar(
         CalendarDate(day, currentMonth, currentYear)
     }
 
-    Column(modifier = modifier.height(320.dp)) {
+    Column(modifier = modifier.height(330.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -200,20 +201,24 @@ fun SignielCalendar(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             // 일
-                            Text(
-                                modifier = Modifier
-                                    .background(
-                                        color = Colors.Main,
-                                        shape = CircleShape,
-                                    )
-                                    .clip(CircleShape)
-                                    .padding(6.dp),
-                                text = (date.day).toString(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Colors.White,
-                            )
+                            Box(
+                               modifier = Modifier
+                                   .background(
+                                       color = Colors.Main,
+                                       shape = CircleShape,
+                                   )
+                                   .clip(CircleShape)
+                                   .size(32.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = (date.day).toString(),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Colors.White,
+                                )
+                            }
                         }
                         if (startOfMonth == daysInCurrentMonth + dayOfWeek) {
                             for (i in 1..7) Spacer(modifier = Modifier.weight(1f))
