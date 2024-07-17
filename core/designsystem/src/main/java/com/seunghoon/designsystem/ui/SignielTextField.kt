@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +45,7 @@ fun SignielTextField(
     onValueChange: (String) -> Unit,
     isHaveBottomLine: Boolean = true,
     keyboardActions: KeyboardActions = KeyboardActions(),
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
 ) {
     var focused by remember { mutableStateOf(false) }
     val alpha by animateFloatAsState(
@@ -95,7 +97,8 @@ fun SignielTextField(
                 singleLine = true,
                 enabled = enable,
                 decorationBox = { it() },
-                keyboardActions = keyboardActions
+                keyboardActions = keyboardActions,
+                keyboardOptions = keyboardOptions,
             )
             Text(
                 modifier = Modifier
