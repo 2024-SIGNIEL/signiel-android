@@ -3,6 +3,7 @@ plugins {
     id(libs.plugins.android.application.get().pluginId)
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlinx.serialization.get().pluginId)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -74,4 +75,7 @@ dependencies {
     debugApi(libs.androidx.compose.ui.test.manifest)
 
     implementation (libs.androidx.material)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 }
