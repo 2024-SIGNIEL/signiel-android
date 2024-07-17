@@ -30,15 +30,15 @@ import com.seunghoon.generator.navigation.BottomMenu
 import com.seunghoon.generator.navigation.NavigationRoute
 
 val menus = listOf(
-    BottomMenu.HOME,
     BottomMenu.PAY,
+    BottomMenu.HOME,
     BottomMenu.MYPAGE,
 )
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RootScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     val navHostController = rememberNavController()
 
@@ -88,7 +88,7 @@ fun RootScreen(
         }
     ) { paddingValues ->
         NavHost(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding()),
             navController = navHostController,
             startDestination = NavigationRoute.Root.HOME,
         ) {

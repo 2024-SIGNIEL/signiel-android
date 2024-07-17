@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -62,7 +64,7 @@ fun HomeScreen(
 ) {
     var started by remember { mutableStateOf(false) }
     val todayPaid by animateIntAsState(
-        targetValue = if (started) 50000
+        targetValue = if (started) 1000
         else 0,
         label = "",
         animationSpec = tween(durationMillis = 2000)
@@ -82,9 +84,38 @@ fun HomeScreen(
                 .background(Colors.Background_Gray)
                 .verticalScroll(rememberScrollState()),
         ) {
+            SignielCalendar()
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(Colors.Main)
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = "한도 준수",
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .background(Colors.OnError),
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = "한도 초과",
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
             PayCard(todayPaid = todayPaid)
-            Spacer(modifier = Modifier.height(24.dp))
+            /*Spacer(modifier = Modifier.height(24.dp))
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = "카테고리",
@@ -95,10 +126,8 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(20.dp))
             Categories()
-            Spacer(modifier = Modifier.height(40.dp))
-            SignielCalendar {
+            Spacer(modifier = Modifier.height(40.dp))*/
 
-            }
         }
     }
 }
@@ -163,7 +192,7 @@ private fun PayCard(
                     text = "오늘의 총 지출금액",
                     style = Typography.Medium.copy(
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = FontWeight.SemiBold,
                     ),
                     color = Colors.White,
                 )

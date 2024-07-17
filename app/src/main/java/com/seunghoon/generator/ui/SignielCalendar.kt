@@ -1,5 +1,6 @@
 package com.seunghoon.generator.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -9,9 +10,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,13 +37,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.seunghoon.designsystem.ui.theme.Colors
 import java.time.LocalDate
+
+enum class CalendarColor(val value: Int) {
+    RED(1),
+    NORMAL(2),
+    BLUE(3),
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SignielCalendar(
     modifier: Modifier = Modifier,
-    fetchDate: (String) -> Unit,
 ) {
     var currentYear by remember { mutableIntStateOf(LocalDate.now().year) }
     var currentMonth by remember { mutableIntStateOf(LocalDate.now().monthValue) }
@@ -75,7 +82,7 @@ fun SignielCalendar(
         CalendarDate(day, currentMonth, currentYear)
     }
 
-    Column(modifier = modifier.fillMaxHeight(0.7f)) {
+    Column(modifier = modifier.height(320.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,7 +103,7 @@ fun SignielCalendar(
                             currentYear--
                             currentMonth = 12
                         } else currentMonth--
-                    }
+                    },
             )
             Text(
                 text = "${currentYear}년 ${currentMonth}월",
@@ -151,6 +158,7 @@ fun SignielCalendar(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(12.dp))
             if (update) {
                 FlowRow(
                     modifier = Modifier
@@ -187,7 +195,6 @@ fun SignielCalendar(
                                     interactionSource = remember { MutableInteractionSource() },
                                 ) {
                                     select = "${date.year}${date.month}${date.day}"
-                                    fetchDate(select)
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
@@ -195,16 +202,17 @@ fun SignielCalendar(
                             // 일
                             Text(
                                 modifier = Modifier
-                                    /*.background(
-                                        color = Color.Gray,
+                                    .background(
+                                        color = Colors.Main,
                                         shape = CircleShape,
-                                    )*/
+                                    )
                                     .clip(CircleShape)
-                                    .padding(4.dp),
+                                    .padding(6.dp),
                                 text = (date.day).toString(),
                                 textAlign = TextAlign.Center,
                                 fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Colors.White,
                             )
                         }
                         if (startOfMonth == daysInCurrentMonth + dayOfWeek) {
@@ -221,9 +229,7 @@ fun SignielCalendar(
 @Composable
 private fun SignielCalendarPreview() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        SignielCalendar {
-
-        }
+        SignielCalendar()
     }
 }
 
