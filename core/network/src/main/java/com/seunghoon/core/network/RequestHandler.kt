@@ -3,7 +3,7 @@ package com.seunghoon.core.network
 import io.ktor.client.plugins.ClientRequestException
 
 class RequestHandler<T> {
-    internal suspend fun request(block: suspend () -> T): T {
+    suspend fun request(block: suspend () -> T): T {
         return try {
             block()
         } catch (e: ClientRequestException) {

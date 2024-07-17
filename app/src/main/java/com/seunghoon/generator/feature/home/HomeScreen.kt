@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +39,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -72,12 +76,13 @@ fun HomeScreen(
 ) {
     var started by remember { mutableStateOf(false) }
     var current by remember { mutableIntStateOf(0) }
+    var last by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
     val database =
         Room.databaseBuilder(context, SignielDatabase::class.java, "pay-database").build()
     val todayPaid by animateIntAsState(
         targetValue = if (started) current
-        else 0,
+        else last,
         label = "",
         animationSpec = tween(durationMillis = 2000)
     )
@@ -97,6 +102,7 @@ fun HomeScreen(
                         sum -= it.amount
                     }
                 }
+                last = current
                 current = sum
             }
         }
@@ -113,53 +119,107 @@ fun HomeScreen(
                 .background(Colors.Background_Gray)
                 .verticalScroll(rememberScrollState()),
         ) {
-            SignielCalendar()
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .clip(CircleShape)
-                        .background(Colors.Main)
+            SignielCalendar {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(CircleShape)
+                            .background(Colors.Main)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = "한도 준수",
+                    )
+                    Spacer(modifier = Modifier.width(24.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .clip(CircleShape)
+                            .background(Colors.OnError),
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = "한도 초과",
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 14.dp),
+                    thickness = 1.dp,
                 )
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = "한도 준수",
+                    modifier = Modifier.padding(horizontal = 32.dp),
+                    text = buildAnnotatedString {
+                        withStyle(
+                            SpanStyle(
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = Colors.Black,
+                            )
+                        ) {
+                            append("7월에는 총 ")
+                        }
+                        withStyle(
+                            SpanStyle(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 24.sp,
+                                color = Colors.Main,
+                            )
+                        ) {
+                            append("10,000원")
+                        }
+                        withStyle(
+                            SpanStyle(
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                color = Colors.Black,
+                            )
+                        ) {
+                            append(" 절약했어요!")
+                        }
+                    }
                 )
-                Spacer(modifier = Modifier.width(24.dp))
-                Box(
-                    modifier = Modifier
-                        .size(12.dp)
-                        .clip(CircleShape)
-                        .background(Colors.OnError),
-                )
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = "한도 초과",
-                )
+                Spacer(modifier = Modifier.height(40.dp))
+                Box(contentAlignment = Alignment.CenterStart) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 18.dp)
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(Colors.Gray10),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .height(8.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Colors.Main)
+                            )
+                        }
+                    }
+                    Row {
+                        Spacer(modifier = Modifier.fillMaxWidth(0.8f))
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_profile),
+                            contentDescription = null,
+                        )
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
             PayCard(
                 todayPaid = todayPaid,
                 max = 10000,
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = "카테고리",
-                style = Typography.Medium.copy(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Categories()
-            Spacer(modifier = Modifier.height(40.dp))
-
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -263,7 +323,7 @@ private fun PayCard(
                     text = "한도 ${DecimalFormat("#,###").format(max)}원",
                     style = Typography.Medium.copy(
                         fontWeight = FontWeight.Normal,
-                        fontSize = 12.sp,
+                        fontSize = 16.sp,
                         color = Colors.White,
                     )
                 )

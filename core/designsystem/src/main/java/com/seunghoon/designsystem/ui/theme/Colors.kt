@@ -17,4 +17,5 @@ object Colors {
     val Secondary = Color(0xFFFFE70B)
     val Tertiary = Color(0xFFB67DFF)
     val OnError = Color(0xFFFF7272)
+    val Gray10 = Color(0xFFD9D9D9)
 }

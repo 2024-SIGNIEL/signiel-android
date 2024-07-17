@@ -1,6 +1,5 @@
 package com.seunghoon.designsystem.ui
 
-import android.graphics.Paint.Align
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -89,7 +88,10 @@ fun SignielTextField(
                 maxLines = 3,
                 value = value,
                 onValueChange = onValueChange,
-                textStyle = Typography.Medium.copy(fontSize = 18.sp),
+                textStyle = Typography.Medium.copy(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                ),
                 singleLine = true,
                 enabled = enable,
                 decorationBox = { it() },
@@ -136,18 +138,20 @@ fun SignielBoxTextField(
             .border(
                 width = 1.dp,
                 color = Colors.Gray,
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(4.dp),
             )
             .padding(
                 horizontal = 16.dp,
-                vertical = 14.dp,
+                vertical = 12.dp,
             )
             .onFocusChanged {
                 focused = it.hasFocus
             },
         value = value,
         onValueChange = onValueChange,
-        textStyle = Typography.Medium,
+        textStyle = Typography.Medium.copy(
+            fontWeight = FontWeight.Normal,
+        ),
         visualTransformation = if (isPassword) PasswordVisualTransformation()
         else VisualTransformation.None,
     ) { innerTextField ->
@@ -157,7 +161,7 @@ fun SignielBoxTextField(
                 modifier = Modifier.alpha(alpha),
                 text = hint,
                 style = Typography.Medium.copy(
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 ),
                 color = Colors.Gray,
