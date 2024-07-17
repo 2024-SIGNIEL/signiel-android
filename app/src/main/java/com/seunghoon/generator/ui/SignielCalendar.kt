@@ -1,6 +1,7 @@
 package com.seunghoon.generator.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +54,7 @@ enum class CalendarColor(val value: Int) {
 @Composable
 fun SignielCalendar(
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
     var currentYear by remember { mutableIntStateOf(LocalDate.now().year) }
     var currentMonth by remember { mutableIntStateOf(LocalDate.now().monthValue) }
@@ -83,7 +87,20 @@ fun SignielCalendar(
         CalendarDate(day, currentMonth, currentYear)
     }
 
-    Column(modifier = modifier.height(330.dp)) {
+    Column(
+        modifier = modifier
+            .height(620.dp)
+            .border(
+                width = 1.dp,
+                shape = RoundedCornerShape(4.dp),
+                brush = Brush.horizontalGradient(
+                    listOf(
+                        Color(0xFF7B9DE8),
+                        Color(0xFFD37CD4),
+                    ),
+                )
+            )
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -227,6 +244,7 @@ fun SignielCalendar(
                 }
             }
         }
+        content()
     }
 }
 
@@ -234,7 +252,9 @@ fun SignielCalendar(
 @Composable
 private fun SignielCalendarPreview() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        SignielCalendar()
+        SignielCalendar {
+
+        }
     }
 }
 

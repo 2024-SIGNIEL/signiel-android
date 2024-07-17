@@ -12,7 +12,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 
-internal val ktorClient = HttpClient {
+val ktorClient = HttpClient {
     expectSuccess = true
     install(ContentNegotiation) {
         json()
