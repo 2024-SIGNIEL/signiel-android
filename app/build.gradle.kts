@@ -66,6 +66,12 @@ dependencies {
     api(libs.io.insert.koin.android)
     implementation("com.airbnb.android:lottie-compose:6.4.1")
 
+    // chart
+    implementation(libs.compose)
+    implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
+    implementation("com.patrykandpatrick.vico:core:1.12.0")
+    implementation("com.patrykandpatrick.vico:views:1.12.0")
+
     implementation(libs.kotlinx.serialization.json)
 
     testApi(libs.junit)
