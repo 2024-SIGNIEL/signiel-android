@@ -97,7 +97,7 @@ fun SignInScreen(navController: NavController) {
         SignielButton(
             modifier = Modifier.padding(bottom = 16.dp),
             text = "다음",
-            isAbleClick = email.isNotBlank() && password.isNotBlank(),
+            //isAbleClick = email.isNotBlank() && password.isNotBlank(),
             onClick = {
                 navController.navigate(NavigationRoute.Main.ROOT)
                 /*CoroutineScope(Dispatchers.IO).launch {

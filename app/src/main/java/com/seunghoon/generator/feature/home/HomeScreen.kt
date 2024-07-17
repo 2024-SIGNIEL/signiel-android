@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
@@ -79,7 +80,8 @@ fun HomeScreen(
     var last by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
     val database =
-        Room.databaseBuilder(context, SignielDatabase::class.java, "pay-database").build()
+        Room.databaseBuilder(context, SignielDatabase::class.java, "pay-database")
+            .fallbackToDestructiveMigration().build()
     val todayPaid by animateIntAsState(
         targetValue = if (started) current
         else last,
@@ -117,7 +119,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .background(Colors.Background_Gray)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
         ) {
             SignielCalendar {
                 Row(
@@ -205,13 +208,27 @@ fun HomeScreen(
                             )
                         }
                     }
-                    Row {
-                        Spacer(modifier = Modifier.fillMaxWidth(0.8f))
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_profile),
-                            contentDescription = null,
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = "0원",
+                        style = TextStyle(
+                            color = Colors.Gray,
                         )
-                    }
+                    )
+                    Text(
+                        text = "100,000원",
+                        style = TextStyle(
+                            color = Colors.Gray,
+                        )
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -264,7 +281,7 @@ private fun PayCard(
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 1.dp)
             .background(
                 Brush.linearGradient(
                     listOf(
