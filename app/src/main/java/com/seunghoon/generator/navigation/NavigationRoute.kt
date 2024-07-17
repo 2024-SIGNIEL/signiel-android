@@ -1,7 +1,5 @@
 package com.seunghoon.generator.navigation
 
-import com.seunghoon.generator.R
-
 sealed class NavigationRoute(val route: String) {
     data object Auth : NavigationRoute("auth") {
         val SPLASH = this.route + "/splash"
