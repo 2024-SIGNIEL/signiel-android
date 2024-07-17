@@ -26,6 +26,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.generator.feature.home.HomeScreen
+import com.seunghoon.generator.feature.my.MyPageScreen
 import com.seunghoon.generator.navigation.BottomMenu
 import com.seunghoon.generator.navigation.NavigationRoute
 
@@ -99,7 +100,7 @@ fun RootScreen(
 
             }
             composable(NavigationRoute.Root.MY_PAGE) {
-
+                MyPageScreen(navController = navController)
             }
         }
     }
