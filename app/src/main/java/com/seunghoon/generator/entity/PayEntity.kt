@@ -5,10 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Pay(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val payType: PayType,
     val amount: Int,
     val use: String,
+    val year: String,
+    val month: String,
+    val day: String,
 )
 
 enum class PayType(val value: String) {

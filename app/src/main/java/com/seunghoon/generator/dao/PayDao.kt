@@ -12,4 +12,11 @@ interface PayDao {
 
     @Query("select * from pay")
     fun queryPay(): List<Pay>
+
+    @Query("select * from pay where year = :year and month = :month and day = :day")
+    fun queryTodayPay(
+        year: Int,
+        month: Int,
+        day: Int,
+    ): List<Pay>
 }

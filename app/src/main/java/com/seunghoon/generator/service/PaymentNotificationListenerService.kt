@@ -7,7 +7,12 @@ import android.util.Log
 import androidx.room.Room
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
+import com.seunghoon.generator.entity.Pay
 import com.seunghoon.generator.entity.PayType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class PaymentNotificationListenerService : NotificationListenerService() {
 
@@ -47,13 +52,32 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                 Log.d("TEST", notificationText)
                 Log.d("TEST", notificationContent)
 
-                val amount = notificationText.split(" ")[1].removeSuffix("원")
+                val amount = notificationText.split(" ")[1].removeSuffix("원").replace(",", "")
 
-               /* val use =
+                val use =
+                    if (notificationText.split(" ")[0] == PayType.DEPOSIT.value) notificationContent.split(
+                        "→"
+                    )[0].trim()
+                    else notificationContent.split("→")[1].trim()
+
                 Log.d("TEST", type.value)
-                Log.d("TEST", amount)*/
+                Log.d("TEST", amount)
+                Log.d("TEST", use)
 
+                val current = LocalDateTime.now()
 
+                CoroutineScope(Dispatchers.IO).launch {
+                    payDao.savePay(
+                        Pay(
+                            payType = type,
+                            amount = amount.toInt(),
+                            use = use,
+                            year = current.year.toString(),
+                            month = current.monthValue.toString(),
+                            day = current.dayOfMonth.toString(),
+                        )
+                    )
+                }
             }
         }
     }

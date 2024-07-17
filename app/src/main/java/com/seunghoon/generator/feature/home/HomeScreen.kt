@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,16 +36,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.room.Room
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
 import com.seunghoon.generator.R
+import com.seunghoon.generator.SignielDatabase
+import com.seunghoon.generator.entity.PayType
 import com.seunghoon.generator.ui.SignielCalendar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
+import java.time.LocalDateTime
 
 val categoryImages = listOf(
     R.drawable.ic_culture,
@@ -63,14 +71,35 @@ fun HomeScreen(
     navController: NavController,
 ) {
     var started by remember { mutableStateOf(false) }
+    var current by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val database =
+        Room.databaseBuilder(context, SignielDatabase::class.java, "pay-database").build()
     val todayPaid by animateIntAsState(
-        targetValue = if (started) 1000
+        targetValue = if (started) current
         else 0,
         label = "",
         animationSpec = tween(durationMillis = 2000)
     )
     LaunchedEffect(Unit) {
         started = true
+        launch(Dispatchers.IO) {
+            LocalDateTime.now().apply {
+                var sum = 0
+                database.getPayDao().queryTodayPay(
+                    year = year,
+                    month = monthValue,
+                    day = dayOfMonth,
+                ).forEach {
+                    if (it.payType == PayType.WITHDRAWAL) {
+                        sum += it.amount
+                    } else {
+                        sum -= it.amount
+                    }
+                }
+                current = sum
+            }
+        }
     }
 
     Column(
@@ -114,8 +143,11 @@ fun HomeScreen(
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-            PayCard(todayPaid = todayPaid)
-            /*Spacer(modifier = Modifier.height(24.dp))
+            PayCard(
+                todayPaid = todayPaid,
+                max = 10000,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = "카테고리",
@@ -126,7 +158,7 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(20.dp))
             Categories()
-            Spacer(modifier = Modifier.height(40.dp))*/
+            Spacer(modifier = Modifier.height(40.dp))
 
         }
     }
@@ -167,6 +199,7 @@ private fun Categories() {
 @Composable
 private fun PayCard(
     todayPaid: Int,
+    max: Int,
 ) {
     Column(
         modifier = Modifier
@@ -222,14 +255,27 @@ private fun PayCard(
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "${DecimalFormat("#,###").format(todayPaid)}원",
-                style = Typography.Medium.copy(
-                    fontSize = 48.sp,
-                    color = Colors.White,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    text = "한도 ${DecimalFormat("#,###").format(max)}원",
+                    style = Typography.Medium.copy(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = Colors.White,
+                    )
+                )
+                Text(
+                    text = "${DecimalFormat("#,###").format(todayPaid)}원",
+                    style = Typography.Medium.copy(
+                        fontSize = 48.sp,
+                        color = Colors.White,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                )
+            }
         }
     }
 }
