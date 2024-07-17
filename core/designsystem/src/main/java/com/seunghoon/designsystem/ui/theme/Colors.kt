@@ -14,4 +14,6 @@ object Colors {
     val Main_Disabled = Color(0xFF89A3FF)
     val Error = Color(0xFFD10000)
     val Background_Gray = Color(0xFFF7F7F7)
+    val Secondary = Color(0xFFFFE70B)
+    val Tertiary = Color(0xFFB67DFF)
 }

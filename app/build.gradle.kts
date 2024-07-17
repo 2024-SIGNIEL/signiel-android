@@ -73,5 +73,5 @@ dependencies {
     debugApi(libs.androidx.compose.ui.tooling)
     debugApi(libs.androidx.compose.ui.test.manifest)
 
-    implementation (libs.androidx.material)
+    implementation(libs.androidx.material)
 }

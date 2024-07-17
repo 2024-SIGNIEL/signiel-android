@@ -1,5 +1,7 @@
 package com.seunghoon.generator.navigation
 
+import com.seunghoon.generator.R
+
 sealed class NavigationRoute(val route: String) {
     data object Auth : NavigationRoute("auth") {
         val SPLASH = this.route + "/splash"
@@ -15,10 +17,35 @@ sealed class NavigationRoute(val route: String) {
 
     data object Main : NavigationRoute("main") {
         val ROOT = this.route + "/root"
-        val HOME = this.route + "/home"
     }
 
     data object Root : NavigationRoute("root") {
-
+        val HOME = this.route + "/home"
+        val PAY = this.route + "/pay"
+        val MY_PAGE = this.route + "/myPage"
     }
+}
+
+sealed class BottomMenu(
+    val route: String,
+    val icon: Int,
+    val label: String,
+) {
+    data object HOME: BottomMenu(
+        route = NavigationRoute.Root.HOME,
+        icon = com.seunghoon.core.designsystem.R.drawable.ic_home,
+        label = "홈",
+    )
+
+    data object PAY: BottomMenu(
+        route = NavigationRoute.Root.PAY,
+        icon = com.seunghoon.core.designsystem.R.drawable.ic_graph,
+        label = "지출",
+    )
+
+    data object MYPAGE: BottomMenu(
+        route = NavigationRoute.Root.MY_PAGE,
+        icon = com.seunghoon.core.designsystem.R.drawable.ic_person,
+        label = "마이페이지",
+    )
 }

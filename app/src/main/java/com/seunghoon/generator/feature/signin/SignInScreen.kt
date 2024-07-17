@@ -82,7 +82,7 @@ fun SignInScreen(navController: NavController) {
         SignielButton(
             modifier = Modifier.padding(bottom = 16.dp),
             text = "다음",
-            onClick = { navController.navigate(NavigationRoute.Main.HOME) },
+            onClick = { navController.navigate(NavigationRoute.Main.ROOT) },
         )
     }
 }

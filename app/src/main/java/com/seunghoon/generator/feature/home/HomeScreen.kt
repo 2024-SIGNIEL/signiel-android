@@ -1,5 +1,6 @@
 package com.seunghoon.generator.feature.home
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,7 @@ import androidx.navigation.NavController
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
 import com.seunghoon.generator.R
+import com.seunghoon.generator.ui.SignielCalendar
 import java.text.DecimalFormat
 
 val categoryImages = listOf(
@@ -51,6 +54,7 @@ val categories = listOf(
     "문화", "생활", "취미"
 )
 
+@SuppressLint("MissingInflatedId")
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -73,7 +77,11 @@ fun HomeScreen(
             .statusBarsPadding(),
     ) {
         Header(title = "홈")
-        Column(modifier = Modifier.background(Colors.Background_Gray)) {
+        Column(
+            modifier = Modifier
+                .background(Colors.Background_Gray)
+                .verticalScroll(rememberScrollState()),
+        ) {
             Spacer(modifier = Modifier.height(16.dp))
             PayCard(todayPaid = todayPaid)
             Spacer(modifier = Modifier.height(24.dp))
@@ -82,13 +90,16 @@ fun HomeScreen(
                 text = "카테고리",
                 style = Typography.Medium.copy(
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                 )
             )
+            Spacer(modifier = Modifier.height(20.dp))
+            Categories()
+            Spacer(modifier = Modifier.height(40.dp))
+            SignielCalendar {
+
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Categories()
-        Calendar
     }
 }
 
@@ -106,7 +117,7 @@ private fun Categories() {
                     .width(140.dp)
                     .height(100.dp)
                     .background(
-                        color = Colors.Main,
+                        color = Colors.Tertiary,
                         shape = RoundedCornerShape(12.dp),
                     )
                     .padding(12.dp)
@@ -119,14 +130,6 @@ private fun Categories() {
                     ),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                /*Image(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .size(140.dp),
-                    painter = painterResource(id = categoryImages[it]),
-                    contentDescription = null,
-                    //contentScale = ContentScale.Crop,
-                )*/
             }
         }
     }
@@ -160,6 +163,7 @@ private fun PayCard(
                     text = "오늘의 총 지출금액",
                     style = Typography.Medium.copy(
                         fontSize = 18.sp,
+                        fontWeight = FontWeight.Normal,
                     ),
                     color = Colors.White,
                 )
@@ -176,7 +180,7 @@ private fun PayCard(
                     Text(
                         text = "지출 내역",
                         style = Typography.Medium.copy(
-                            fontWeight = FontWeight.Light,
+                            fontWeight = FontWeight.Normal,
                         ),
                         color = Colors.White
                     )
@@ -194,7 +198,7 @@ private fun PayCard(
                 style = Typography.Medium.copy(
                     fontSize = 48.sp,
                     color = Colors.White,
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.SemiBold,
                 ),
             )
         }
@@ -209,16 +213,21 @@ fun Header(title: String) {
                 .fillMaxWidth()
                 .padding(
                     horizontal = 24.dp,
-                    vertical = 22.dp,
+                    vertical = 12.dp,
                 ),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Image(
-                modifier = Modifier.size(36.dp),
-                painter = painterResource(id = R.drawable.ic_fino),
+                modifier = Modifier.size(60.dp),
+                painter = painterResource(id = R.drawable.ic_fino_text),
+                contentDescription = null,
+            )
+            Image(
+                modifier = Modifier.size(40.dp),
+                painter = painterResource(id = R.drawable.ic_profile),
                 contentDescription = null,
             )
         }
-        //HorizontalDivider(thickness = 1.dp)
     }
 }
