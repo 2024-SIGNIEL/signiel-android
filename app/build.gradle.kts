@@ -4,6 +4,7 @@ plugins {
     id(libs.plugins.kotlin.android.get().pluginId)
     id(libs.plugins.kotlinx.serialization.get().pluginId)
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -74,8 +75,13 @@ dependencies {
     debugApi(libs.androidx.compose.ui.tooling)
     debugApi(libs.androidx.compose.ui.test.manifest)
 
-    implementation (libs.androidx.material)
+    implementation(libs.androidx.material)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+
+    // room
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 }
