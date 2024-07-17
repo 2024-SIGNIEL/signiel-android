@@ -3,7 +3,6 @@ package com.seunghoon.generator.service
 import android.app.Notification
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import android.util.Log
 import androidx.room.Room
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
@@ -50,9 +49,6 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                     if (notificationText.split(" ")[0] == PayType.DEPOSIT.value) PayType.DEPOSIT
                     else PayType.WITHDRAWAL
 
-                Log.d("TEST", notificationText)
-                Log.d("TEST", notificationContent)
-
                 val amount = notificationText.split(" ")[1].removeSuffix("원").replace(",", "")
 
                 val use =
@@ -60,10 +56,6 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                         "→"
                     )[0].trim()
                     else notificationContent.split("→")[1].trim()
-
-                Log.d("TEST", type.value)
-                Log.d("TEST", amount)
-                Log.d("TEST", use)
 
                 val current = LocalDateTime.now()
 

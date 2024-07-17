@@ -57,7 +57,7 @@ fun SignielCalendar(
     modifier: Modifier = Modifier,
     calendarPayHistory: Array<Int>,
     maxPay: Int,
-    onChanged: (maxDay: String) -> Unit,
+    onChange: (month: Int, year: Int) -> Unit,
     content: @Composable () -> Unit,
 ) {
     var currentYear by remember { mutableIntStateOf(LocalDate.now().year) }
@@ -90,7 +90,6 @@ fun SignielCalendar(
 
     LaunchedEffect(currentMonth) {
         update = true
-        onChanged(dates.size.toString())
     }
 
     Column(
@@ -121,6 +120,7 @@ fun SignielCalendar(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
                     ) {
+                        onChange(currentMonth - 1, currentYear)
                         update = false
                         if (currentMonth - 1 < 1) {
                             currentYear--
@@ -146,6 +146,7 @@ fun SignielCalendar(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },
                     ) {
+                        onChange(currentMonth + 1, currentYear)
                         update = false
                         if (currentMonth + 1 > 12) {
                             currentYear++
@@ -196,7 +197,7 @@ fun SignielCalendar(
                 ) {
                     var startOfMonth = 1
                     var select by remember { mutableStateOf("") }
-                    dates.forEach { date ->
+                    dates.forEachIndexed { index, date ->
                         val today =
                             if (date.day < 10) "${date.year}-${date.month}-0${date.day}"
                             else "${date.year}-${date.month}-${date.day}"
@@ -222,11 +223,11 @@ fun SignielCalendar(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             // 일
-                            val sumPay = calendarPayHistory[dates.indexOf(date) + 1]
+                            val sumPay = calendarPayHistory[date.day - 1]
                             val (backgroundColor, textColor) = if (sumPay == 0) Color(0xFFDBDBDB) to Color(
                                 0xFF939393
                             )
-                            else if (sumPay > maxPay) Color(0xFFFF7272) to Colors.White
+                            else if (sumPay < maxPay) Colors.OnError to Colors.White
                             else Colors.Main to Colors.White
                             Box(
                                 modifier = Modifier
@@ -275,8 +276,8 @@ fun SignielCalendar(
                                                     }T00:00:00.000000"
                                                 )
                                             )
-                                    ) Colors.Black
-                                    else Colors.Black,
+                                    ) textColor
+                                    else textColor,
                                 )
                             }
                         }
@@ -297,8 +298,8 @@ private fun SignielCalendarPreview() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         SignielCalendar(
             calendarPayHistory = arrayOf(0),
-            onChanged = {},
             maxPay = 0,
+            onChange = { month, year -> }
         ) {
 
         }

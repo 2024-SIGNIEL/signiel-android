@@ -1,6 +1,7 @@
 package com.seunghoon.generator.feature.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -69,6 +70,8 @@ val categoryImages = listOf(
     R.drawable.ic_hobby,
 )
 
+val calendarPayHistory = Array(31) { 0 }
+
 val categories = listOf(
     "문화", "생활", "취미"
 )
@@ -116,6 +119,15 @@ fun HomeScreen(
                 current = sum
             }
         }
+        getCalendarPayHistory(
+            payDao = database.getPayDao(),
+            maxDay = daysInMonth(
+                month = LocalDateTime.now().monthValue,
+                year = LocalDateTime.now().year,
+            ),
+            month = LocalDateTime.now().monthValue,
+            year = LocalDateTime.now().year,
+        )
     }
 
     Column(
@@ -131,12 +143,19 @@ fun HomeScreen(
                 .padding(horizontal = 16.dp),
         ) {
             SignielCalendar(
-                calendarPayHistory = getCalendarPayHistory(
-                    payDao = database.getPayDao(),
-                    maxDay = maxDay,
-                ),
+                calendarPayHistory = calendarPayHistory,
                 maxPay = maxPay,
-                onChanged = { maxDay = it.toInt() }
+                onChange = { month, year ->
+                    getCalendarPayHistory(
+                        payDao = database.getPayDao(),
+                        maxDay = daysInMonth(
+                            month = month,
+                            year = year,
+                        ),
+                        month = month,
+                        year = year,
+                    )
+                },
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -402,17 +421,21 @@ fun Header(title: String) {
 fun getCalendarPayHistory(
     payDao: PayDao,
     maxDay: Int,
-): Array<Int> {
-    val array = Array(maxDay + 1) { 0 }
-    val localDateTime = LocalDateTime.now()
+    year: Int,
+    month: Int,
+) {
+    Log.d("TEST", year.toString())
+    Log.d("TEST", month.toString())
+    val array = Array(31) { 0 }
     CoroutineScope(Dispatchers.IO).launch {
         runCatching {
             payDao.queryByMonthValue(
-                year = localDateTime.year,
-                month = localDateTime.monthValue,
+                year = year,
+                month = month,
             )
         }.onSuccess {
-            it.forEach { element ->
+            Log.d("TEST", it.toString())
+            it.forEachIndexed { index, element ->
                 when (element.payType) {
                     PayType.DEPOSIT -> {
                         array[element.day.toInt()] += element.amount
@@ -420,11 +443,21 @@ fun getCalendarPayHistory(
 
                     else -> array[element.day.toInt()] -= element.amount
                 }
+                calendarPayHistory[index] = array[index]
             }
-        }.onFailure {
-
+            (1..31).forEach { i ->
+                calendarPayHistory[i - 1] = array[i - 1]
+            }
+            Log.d("TEST", calendarPayHistory.toList().toString())
+            Log.d("TEST", array.toList().toString())
         }
     }
+}
 
-    return array
+fun daysInMonth(month: Int, year: Int): Int {
+    return when (month) {
+        2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+        4, 6, 9, 11 -> 30
+        else -> 31
+    }
 }

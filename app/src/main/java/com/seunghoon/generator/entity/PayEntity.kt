@@ -20,6 +20,6 @@ enum class PayType(val value: String) {
     WITHDRAWAL("출금"),
 }
 
-enum class PayCategory(val value: String) {
+enum class   PayCategory(val value: String) {
     LIFE("생활"),
 }
