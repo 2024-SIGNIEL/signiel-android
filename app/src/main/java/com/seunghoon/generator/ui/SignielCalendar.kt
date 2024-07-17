@@ -227,15 +227,29 @@ fun SignielCalendar(
                                 0xFF939393
                             )
                             else if (sumPay > maxPay) Color(0xFFFF7272) to Colors.White
-                            else if (LocalDateTime.now()
-                                    .isAfter(LocalDateTime.parse("${date.year}-${date.year}-${date.day}T00:00:00.000000"))
-                            ) Colors.White to Colors.Black
                             else Colors.Main to Colors.White
                             Box(
                                 modifier = Modifier
-                                    .background(
-                                        color = backgroundColor,
-                                        shape = CircleShape,
+                                    .then(
+                                        if (LocalDateTime
+                                                .now()
+                                                .isAfter(
+                                                    LocalDateTime.parse(
+                                                        "${date.year}-${
+                                                            date.month
+                                                                .toString()
+                                                                .padStart(2, '0')
+                                                        }-${
+                                                            date.day
+                                                                .toString()
+                                                                .padStart(2, '0')
+                                                        }T00:00:00.000000"
+                                                    )
+                                                )
+                                        ) Modifier.background(
+                                            color = backgroundColor,
+                                            shape = CircleShape,
+                                        ) else Modifier
                                     )
                                     .clip(CircleShape)
                                     .size(32.dp),
@@ -246,7 +260,23 @@ fun SignielCalendar(
                                     textAlign = TextAlign.Center,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = textColor,
+                                    color = if (LocalDateTime
+                                            .now()
+                                            .isAfter(
+                                                LocalDateTime.parse(
+                                                    "${date.year}-${
+                                                        date.month
+                                                            .toString()
+                                                            .padStart(2, '0')
+                                                    }-${
+                                                        date.day
+                                                            .toString()
+                                                            .padStart(2, '0')
+                                                    }T00:00:00.000000"
+                                                )
+                                            )
+                                    ) Colors.Black
+                                    else Colors.Black,
                                 )
                             }
                         }
