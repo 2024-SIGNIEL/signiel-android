@@ -1,5 +1,8 @@
 package com.seunghoon.generator.feature.my
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.seunghoon.core.designsystem.R
 import com.seunghoon.designsystem.ui.SignielButton
 import com.seunghoon.designsystem.ui.SignielTextField
@@ -54,6 +60,9 @@ fun MyPageScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
+    val (profileImage, onChangeProfileImage) = remember {
+        mutableStateOf("")
+    }
     val (showPinSheet, onChangeShowPinSheet) = remember {
         mutableStateOf(false)
     }
@@ -63,6 +72,21 @@ fun MyPageScreen(
 
     var pin by remember { mutableStateOf("") }
     var money by remember { mutableStateOf("") }
+
+    val activityResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { imageUrl ->
+            onChangeProfileImage(imageUrl.toString())
+            SharedPreferenceManager.sharedPreference
+                .edit()
+                .putString(Keys.IMAGE, imageUrl.toString())
+                .commit()
+        }
+    )
+
+    val profile =
+        SharedPreferenceManager.sharedPreference.getString(Keys.IMAGE, "") ?: R.drawable.ic_person
+    onChangeProfileImage(profile.toString())
 
     if (showPinSheet) {
         ModalBottomSheet(
@@ -172,12 +196,18 @@ fun MyPageScreen(
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .size(90.dp)
-                    .clip(CircleShape),
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                    .clip(CircleShape)
+                    .clickable {
+                        val mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
+                        val request = PickVisualMediaRequest(mediaType)
+                        activityResultLauncher.launch(request)
+                    },
+                model = profileImage.isBlank() ?: R.drawable.ic_person,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
             )
             Spacer(modifier = Modifier.width(30.dp))
             Column(
@@ -265,6 +295,36 @@ fun MyPageScreen(
                     icon = com.seunghoon.generator.R.drawable.ic_cloth,
                     title = "의류",
                     percent = "13%",
+                )
+                Category(
+                    icon = com.seunghoon.generator.R.drawable.ic_bus,
+                    title = "대중교통",
+                    percent = "3%",
+                )
+                Category(
+                    icon = com.seunghoon.generator.R.drawable.ic_game,
+                    title = "게임",
+                    percent = "16%",
+                )
+                Category(
+                    icon = com.seunghoon.generator.R.drawable.ic_health,
+                    title = "건강",
+                    percent = "21%",
+                )
+                Category(
+                    icon = com.seunghoon.generator.R.drawable.ic_foundation,
+                    title = "뷰티",
+                    percent = "26%",
+                )
+                Category(
+                    icon = com.seunghoon.generator.R.drawable.ic_transfer,
+                    title = "이체",
+                    percent = "87%",
+                )
+                Category(
+                    icon = com.seunghoon.generator.R.drawable.ic_etc,
+                    title = "기타",
+                    percent = "2%"
                 )
             }
         }

@@ -31,3 +31,22 @@ val ktorClient = HttpClient {
         header(HttpHeaders.Authorization, "Bearer $")
     }
 }
+
+val gptClient = HttpClient {
+    expectSuccess = true
+    install(ContentNegotiation) {
+        json()
+    }
+    install(Logging) {
+        logger = object : Logger {
+            override fun log(message: String) {
+                Log.d("ktor", message)
+            }
+        }
+        level = LogLevel.BODY
+    }
+    defaultRequest {
+        url("http://192.168.2.121:8000")
+        header(HttpHeaders.ContentType, ContentType.Application.Json)
+    }
+}

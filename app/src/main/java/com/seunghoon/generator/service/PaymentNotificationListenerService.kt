@@ -6,7 +6,7 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import androidx.room.Room
 import com.seunghoon.core.network.RequestHandler
-import com.seunghoon.core.network.ktorClient
+import com.seunghoon.core.network.gptClient
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
 import com.seunghoon.generator.entity.GptRequest
@@ -28,7 +28,6 @@ class PaymentNotificationListenerService : NotificationListenerService() {
 
     companion object {
         private val PAYMENT_APP_PACKAGES = listOf(
-            "viva.republica.toss",
             "com.kakaobank.channel",
         )
     }
@@ -72,8 +71,8 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                 CoroutineScope(Dispatchers.IO).launch {
                     runCatching {
                         RequestHandler<GptResponse>().request {
-                            ktorClient.post {
-                                url("http://0.0.0.0:8000/")
+                            gptClient.post {
+                                url("/prompt")
                                 setBody(
                                     GptRequest(
                                         prompt = use
@@ -83,7 +82,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                         }
                     }.onSuccess {
                         withContext(Dispatchers.IO) {
-                            Log.d("TEST1",it.detail)
+                            Log.d("TEST1",it.answer)
                         }
                     }.onFailure {
                         Log.d("TEST2",it.toString())

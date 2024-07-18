@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GptResponse (
-    val detail: String,
+    val answer: String,
 )
