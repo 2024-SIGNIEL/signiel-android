@@ -1,7 +1,6 @@
 package com.seunghoon.generator.feature.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -96,7 +95,10 @@ fun HomeScreen(
         animationSpec = tween(durationMillis = 2000)
     )
     val maxPay = SharedPreferenceManager.sharedPreference.getString(Keys.MAX_PAY, "0")?.toInt() ?: 0
-    var maxDay by remember { mutableIntStateOf(0) }
+    val maxDay = daysInMonth(
+        month = LocalDateTime.now().monthValue,
+        year = LocalDateTime.now().year,
+    )
 
 
     LaunchedEffect(Unit) {
@@ -424,8 +426,6 @@ fun getCalendarPayHistory(
     year: Int,
     month: Int,
 ) {
-    Log.d("TEST", year.toString())
-    Log.d("TEST", month.toString())
     val array = Array(31) { 0 }
     CoroutineScope(Dispatchers.IO).launch {
         runCatching {
@@ -434,7 +434,6 @@ fun getCalendarPayHistory(
                 month = month,
             )
         }.onSuccess {
-            Log.d("TEST", it.toString())
             it.forEachIndexed { index, element ->
                 when (element.payType) {
                     PayType.DEPOSIT -> {
@@ -448,8 +447,7 @@ fun getCalendarPayHistory(
             (1..31).forEach { i ->
                 calendarPayHistory[i - 1] = array[i - 1]
             }
-            Log.d("TEST", calendarPayHistory.toList().toString())
-            Log.d("TEST", array.toList().toString())
+
         }
     }
 }

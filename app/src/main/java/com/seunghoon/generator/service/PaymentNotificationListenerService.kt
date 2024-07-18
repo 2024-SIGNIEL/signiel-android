@@ -53,7 +53,10 @@ class PaymentNotificationListenerService : NotificationListenerService() {
             val notificationText = extras.getString(Notification.EXTRA_TITLE)
             val notificationContent = extras.getString(Notification.EXTRA_TEXT)
 
-            if (notificationText != null && notificationContent != null) {
+            if (notificationText != null && notificationContent != null && notificationContent.contains(
+                    "→"
+                )
+            ) {
                 val type =
                     if (notificationText.split(" ")[0] == PayType.DEPOSIT.value) PayType.DEPOSIT
                     else PayType.WITHDRAWAL
@@ -85,7 +88,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                             Log.d("TEST1",it.answer)
                         }
                     }.onFailure {
-                        Log.d("TEST2",it.toString())
+                        Log.d("TEST2", it.toString())
                     }
                 }
                 CoroutineScope(Dispatchers.IO).launch {

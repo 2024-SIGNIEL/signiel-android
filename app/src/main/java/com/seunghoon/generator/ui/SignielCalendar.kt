@@ -246,7 +246,7 @@ fun SignielCalendar(
                                                             date.day
                                                                 .toString()
                                                                 .padStart(2, '0')
-                                                        }T00:00:00.000000"
+                                                        }T23:59:59.999999"
                                                     )
                                                 )
                                         ) Modifier.background(
@@ -275,7 +275,7 @@ fun SignielCalendar(
                                                         date.day
                                                             .toString()
                                                             .padStart(2, '0')
-                                                    }T00:00:00.000000"
+                                                    }T23:59:59.999999"
                                                 )
                                             )
                                     ) textColor
