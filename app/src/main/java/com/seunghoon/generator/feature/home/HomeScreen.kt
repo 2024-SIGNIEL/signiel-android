@@ -323,6 +323,7 @@ fun HomeScreen(
                 PayCard(
                     todayPaid = todayPaid,
                     max = maxPay,
+                    navController = navController,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
