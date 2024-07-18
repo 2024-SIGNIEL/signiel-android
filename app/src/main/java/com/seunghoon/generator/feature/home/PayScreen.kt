@@ -1,6 +1,6 @@
 package com.seunghoon.generator.feature.home
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -17,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +35,7 @@ import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.seunghoon.designsystem.ui.theme.Colors
+import com.seunghoon.generator.R
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
 
@@ -66,17 +67,15 @@ fun PayScreen(navController: NavController) {
 
 @Composable
 private fun History(payDao: PayDao) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = Colors.Gray,
-                shape = RoundedCornerShape(10.dp),
-            )
     ) {
-
+        Image(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            painter = painterResource(id = R.drawable.test),
+            contentDescription = null,
+        )
     }
 }
 
