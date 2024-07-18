@@ -95,6 +95,7 @@ fun HomeScreen(
         animationSpec = tween(durationMillis = 2000)
     )
     val maxPay = SharedPreferenceManager.sharedPreference.getString(Keys.MAX_PAY, "0")?.toInt() ?: 0
+    val pinMoney = SharedPreferenceManager.sharedPreference.getString(Keys.PIN_MONEY,"0")?.toInt() ?: 0
     val maxDay = daysInMonth(
         month = LocalDateTime.now().monthValue,
         year = LocalDateTime.now().year,
@@ -260,7 +261,7 @@ fun HomeScreen(
                         )
                     )
                     Text(
-                        text = "${if (maxPay == 0) 0 else DecimalFormat("#,###").format(maxPay * maxDay)}원",
+                        text = "${if (pinMoney == 0) 0 else DecimalFormat("#,###").format(maxPay * maxDay)}원",
                         style = TextStyle(
                             color = Colors.Gray,
                         )

@@ -71,6 +71,8 @@ class PaymentNotificationListenerService : NotificationListenerService() {
 
                 val current = LocalDateTime.now()
 
+                var category = ""
+
                 CoroutineScope(Dispatchers.IO).launch {
                     runCatching {
                         RequestHandler<GptResponse>().request {
@@ -86,6 +88,8 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                     }.onSuccess {
                         withContext(Dispatchers.IO) {
                             Log.d("TEST1",it.answer)
+                            category = it.answer
+
                         }
                     }.onFailure {
                         Log.d("TEST2", it.toString())
@@ -100,7 +104,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                             year = current.year.toString(),
                             month = current.monthValue.toString(),
                             day = current.dayOfMonth.toString(),
-                            category = PayCategory.LIFE,
+                            category = category,
                         )
                     )
                 }

@@ -12,7 +12,7 @@ data class Pay(
     val year: String,
     val month: String,
     val day: String,
-    val category: PayCategory
+    val category: String,
 )
 
 enum class PayType(val value: String) {
@@ -21,5 +21,6 @@ enum class PayType(val value: String) {
 }
 
 enum class   PayCategory(val value: String) {
-    LIFE("생활"),
+    LIFE("뷰티"),
+
 }

@@ -205,7 +205,7 @@ fun MyPageScreen(
                         val request = PickVisualMediaRequest(mediaType)
                         activityResultLauncher.launch(request)
                     },
-                model = profileImage.isBlank() ?: R.drawable.ic_person,
+                model = com.seunghoon.generator.R.drawable.ic_profile,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )
@@ -217,7 +217,7 @@ fun MyPageScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "홍길동",
+                        text = "정승훈",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -227,7 +227,7 @@ fun MyPageScreen(
                     )
                 }
                 Text(
-                    text = "abddsas@gmail, wlqdprkryhtlvek",
+                    text = "wjdtmdgns@gmail.com",
                     fontSize = 12.sp,
                 )
             }
