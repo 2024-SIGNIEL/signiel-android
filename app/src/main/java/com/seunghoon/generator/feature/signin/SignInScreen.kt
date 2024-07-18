@@ -100,6 +100,7 @@ fun SignInScreen(navController: NavController) {
             //isAbleClick = email.isNotBlank() && password.isNotBlank(),
             onClick = {
                 navController.navigate(NavigationRoute.Main.ROOT)
+                Toast.makeText(context, "로그인 되었습니다!", Toast.LENGTH_SHORT).show()
                 /*CoroutineScope(Dispatchers.IO).launch {
                     runCatching {
                         RequestHandler<LoginResponse>().request {

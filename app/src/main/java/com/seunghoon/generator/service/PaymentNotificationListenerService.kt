@@ -70,9 +70,6 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                     else notificationContent.split("→")[1].trim()
 
                 val current = LocalDateTime.now()
-
-                var category = ""
-
                 CoroutineScope(Dispatchers.IO).launch {
                     runCatching {
                         RequestHandler<GptResponse>().request {
@@ -86,27 +83,23 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                             }.body<GptResponse>()
                         }
                     }.onSuccess {
-                        withContext(Dispatchers.IO) {
-                            Log.d("TEST1",it.answer)
-                            category = it.answer
-
-                        }
+                        payDao.savePay(
+                            Pay(
+                                payType = type,
+                                amount = amount.toInt(),
+                                use = use,
+                                year = current.year.toString(),
+                                month = current.monthValue.toString(),
+                                day = current.dayOfMonth.toString(),
+                                category = it.answer,
+                            )
+                        )
                     }.onFailure {
                         Log.d("TEST2", it.toString())
                     }
                 }
                 CoroutineScope(Dispatchers.IO).launch {
-                    payDao.savePay(
-                        Pay(
-                            payType = type,
-                            amount = amount.toInt(),
-                            use = use,
-                            year = current.year.toString(),
-                            month = current.monthValue.toString(),
-                            day = current.dayOfMonth.toString(),
-                            category = category,
-                        )
-                    )
+
                 }
             }
         }

@@ -46,7 +46,7 @@ val gptClient = HttpClient {
         level = LogLevel.BODY
     }
     defaultRequest {
-        url("http://192.168.2.121:8000")
+        url("http://192.168.1.112:8000")
         header(HttpHeaders.ContentType, ContentType.Application.Json)
     }
 }

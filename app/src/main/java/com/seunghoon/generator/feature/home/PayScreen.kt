@@ -16,10 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.room.Room
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -33,9 +35,14 @@ import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.seunghoon.designsystem.ui.theme.Colors
+import com.seunghoon.generator.SignielDatabase
+import com.seunghoon.generator.dao.PayDao
 
 @Composable
 fun PayScreen(navController: NavController) {
+    val context = LocalContext.current
+    val database = Room.databaseBuilder(context, SignielDatabase::class.java, "pay-database")
+        .fallbackToDestructiveMigration().build()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,12 +60,13 @@ fun PayScreen(navController: NavController) {
         )
         PayChart()
         Spacer(modifier = Modifier.height(36.dp))
-        History()
+        History(database.getPayDao())
     }
 }
 
 @Composable
-private fun History() {
+private fun History(payDao: PayDao) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,16 +100,16 @@ private fun PayChart() {
             )
         }
         val list = mutableListOf<FloatEntry>()
-        repeat(31) {
+        repeat(5) {
             list.add(FloatEntry(it.toFloat(), it.toFloat()))
         }
         Box {
             Chart(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                //modifier = Modifier.padding(horizontal = 16.dp),
                 chart = lineChart(lines = datasetLineSpec),
                 model = entryModelOf(list),
-                startAxis = rememberStartAxis(/*guideline = null*/),
-                bottomAxis = rememberBottomAxis(/*guideline = null*/),
+                startAxis = rememberStartAxis(),
+                bottomAxis = rememberBottomAxis(),
                 chartScrollState = rememberChartScrollState(),
                 marker = marker,
             )
