@@ -53,10 +53,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
             val notificationText = extras.getString(Notification.EXTRA_TITLE)
             val notificationContent = extras.getString(Notification.EXTRA_TEXT)
 
-            if (notificationText != null && notificationContent != null && notificationContent.contains(
-                    "→"
-                )
-            ) {
+            if (notificationText != null && notificationContent != null) {
                 val type =
                     if (notificationText.split(" ")[0] == PayType.DEPOSIT.value) PayType.DEPOSIT
                     else PayType.WITHDRAWAL

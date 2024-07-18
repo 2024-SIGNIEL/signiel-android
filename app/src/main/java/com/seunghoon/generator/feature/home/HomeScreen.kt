@@ -1,6 +1,7 @@
 package com.seunghoon.generator.feature.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -50,6 +51,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.room.Room
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.seunghoon.designsystem.ui.theme.Colors
 import com.seunghoon.designsystem.ui.theme.Typography
 import com.seunghoon.generator.Keys
@@ -62,6 +69,7 @@ import com.seunghoon.generator.navigation.NavigationRoute
 import com.seunghoon.generator.ui.SignielCalendar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -106,6 +114,14 @@ fun HomeScreen(
         year = LocalDateTime.now().year,
     )
 
+    var isRefreshing by remember { mutableStateOf(false) }
+    val swipeRefreshState = remember { SwipeRefreshState(isRefreshing) }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.money_raain))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        isPlaying = isRefreshing,
+        restartOnPlay = false
+    )
 
     LaunchedEffect(Unit) {
         started = true
@@ -138,140 +154,177 @@ fun HomeScreen(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            delay(2000)
+            isRefreshing = false
+        }
+    }
+
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = {
+            Log.d("TEST","1")
+            isRefreshing = true
+        },
+        indicator = { state, trigger ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (state.isRefreshing) {
+                    LottieAnimation(
+                        composition = composition,
+                        progress = progress,
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
+            }
+        }
     ) {
-        Header(title = "홈")
         Column(
             modifier = Modifier
-                .background(Colors.Background_Gray)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .fillMaxSize()
+                .statusBarsPadding(),
         ) {
-            SignielCalendar(
-                calendarPayHistory = calendarPayHistory,
-                maxPay = maxPay,
-                onChange = { month, year ->
-                    getCalendarPayHistory(
-                        payDao = database.getPayDao(),
-                        maxDay = daysInMonth(
+            Header(title = "홈")
+            Column(
+                modifier = Modifier
+                    .background(Colors.Background_Gray)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+            ) {
+                SignielCalendar(
+                    calendarPayHistory = calendarPayHistory,
+                    maxPay = maxPay,
+                    onChange = { month, year ->
+                        getCalendarPayHistory(
+                            payDao = database.getPayDao(),
+                            maxDay = daysInMonth(
+                                month = month,
+                                year = year,
+                            ),
                             month = month,
                             year = year,
-                        ),
-                        month = month,
-                        year = year,
-                    )
-                },
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                        )
+                    },
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(12.dp)
-                            .clip(CircleShape)
-                            .background(Colors.Main)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(12.dp)
+                                .clip(CircleShape)
+                                .background(Colors.Main)
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = "한도 준수",
+                        )
+                        Spacer(modifier = Modifier.width(24.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(12.dp)
+                                .clip(CircleShape)
+                                .background(Colors.OnError),
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = "한도 초과",
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 14.dp),
+                        thickness = 1.dp,
                     )
+                    Spacer(modifier = Modifier.height(24.dp))
                     Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = "한도 준수",
-                    )
-                    Spacer(modifier = Modifier.width(24.dp))
-                    Box(
-                        modifier = Modifier
-                            .size(12.dp)
-                            .clip(CircleShape)
-                            .background(Colors.OnError),
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = "한도 초과",
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 14.dp),
-                    thickness = 1.dp,
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                    text = buildAnnotatedString {
-                        withStyle(
-                            SpanStyle(
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 16.sp,
-                                color = Colors.Black,
-                            )
-                        ) {
-                            append("7월에는 총 ")
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        text = buildAnnotatedString {
+                            withStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 16.sp,
+                                    color = Colors.Black,
+                                )
+                            ) {
+                                append("7월에는 총 ")
+                            }
+                            withStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 24.sp,
+                                    color = Colors.Main,
+                                )
+                            ) {
+                                append("10,000원")
+                            }
+                            withStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 16.sp,
+                                    color = Colors.Black,
+                                )
+                            ) {
+                                append(" 절약했어요!")
+                            }
                         }
-                        withStyle(
-                            SpanStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 24.sp,
-                                color = Colors.Main,
-                            )
+                    )
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Box(contentAlignment = Alignment.CenterStart) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 18.dp)
+                                .height(8.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(Colors.Gray10),
                         ) {
-                            append("10,000원")
-                        }
-                        withStyle(
-                            SpanStyle(
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 16.sp,
-                                color = Colors.Black,
-                            )
-                        ) {
-                            append(" 절약했어요!")
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.8f)
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(Colors.Main)
+                                )
+                            }
                         }
                     }
-                )
-                Spacer(modifier = Modifier.height(40.dp))
-                Box(contentAlignment = Alignment.CenterStart) {
-                    Box(
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 18.dp)
-                            .height(8.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(Colors.Gray10),
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.8f)
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(Colors.Main)
+                        Text(
+                            text = "0원",
+                            style = TextStyle(
+                                color = Colors.Gray,
                             )
-                        }
+                        )
+                        Text(
+                            text = "${if (pinMoney == 0) 0 else DecimalFormat("#,###").format(maxPay * maxDay)}원",
+                            style = TextStyle(
+                                color = Colors.Gray,
+                            )
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = "0원",
-                        style = TextStyle(
-                            color = Colors.Gray,
-                        )
-                    )
-                    Text(
-                        text = "${if (pinMoney == 0) 0 else DecimalFormat("#,###").format(maxPay * maxDay)}원",
-                        style = TextStyle(
-                            color = Colors.Gray,
-                        )
-                    )
-                }
+                PayCard(
+                    todayPaid = todayPaid,
+                    max = maxPay,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
             PayCard(

@@ -93,4 +93,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
 
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.26.3-beta")
+    implementation ("com.airbnb.android:lottie-compose:4.2.2")
 }
