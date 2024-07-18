@@ -15,6 +15,7 @@ sealed class NavigationRoute(val route: String) {
 
     data object Main : NavigationRoute("main") {
         val ROOT = this.route + "/root"
+        val HISTORY = this.route + "/history"
     }
 
     data object Root : NavigationRoute("root") {

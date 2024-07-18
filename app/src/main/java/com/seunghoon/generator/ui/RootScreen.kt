@@ -95,7 +95,10 @@ fun RootScreen(
             startDestination = NavigationRoute.Root.HOME,
         ) {
             composable(NavigationRoute.Root.HOME) {
-                HomeScreen(navController = navHostController)
+                HomeScreen(
+                    navHostController = navHostController,
+                    navController = navController,
+                )
             }
             composable(NavigationRoute.Root.PAY) {
                 PayScreen(navController = navHostController)

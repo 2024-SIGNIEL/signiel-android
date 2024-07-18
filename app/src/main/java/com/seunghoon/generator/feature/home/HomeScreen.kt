@@ -5,6 +5,8 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +58,7 @@ import com.seunghoon.generator.SharedPreferenceManager
 import com.seunghoon.generator.SignielDatabase
 import com.seunghoon.generator.dao.PayDao
 import com.seunghoon.generator.entity.PayType
+import com.seunghoon.generator.navigation.NavigationRoute
 import com.seunghoon.generator.ui.SignielCalendar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -79,6 +82,7 @@ val categories = listOf(
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    navHostController: NavController,
     navController: NavController,
 ) {
     var started by remember { mutableStateOf(false) }
@@ -95,7 +99,8 @@ fun HomeScreen(
         animationSpec = tween(durationMillis = 2000)
     )
     val maxPay = SharedPreferenceManager.sharedPreference.getString(Keys.MAX_PAY, "0")?.toInt() ?: 0
-    val pinMoney = SharedPreferenceManager.sharedPreference.getString(Keys.PIN_MONEY,"0")?.toInt() ?: 0
+    val pinMoney =
+        SharedPreferenceManager.sharedPreference.getString(Keys.PIN_MONEY, "0")?.toInt() ?: 0
     val maxDay = daysInMonth(
         month = LocalDateTime.now().monthValue,
         year = LocalDateTime.now().year,
@@ -272,6 +277,7 @@ fun HomeScreen(
             PayCard(
                 todayPaid = todayPaid,
                 max = maxPay,
+                navController = navController,
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -314,6 +320,7 @@ private fun Categories() {
 private fun PayCard(
     todayPaid: Int,
     max: Int,
+    navController: NavController,
 ) {
     Column(
         modifier = Modifier
@@ -352,7 +359,15 @@ private fun PayCard(
                     tint = Colors.White,
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                    ) {
+                        navController.navigate(NavigationRoute.Main.HISTORY)
+                    },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = "지출 내역",
                         style = Typography.Medium.copy(
