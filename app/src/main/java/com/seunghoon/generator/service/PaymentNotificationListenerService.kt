@@ -83,17 +83,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                             }.body<GptResponse>()
                         }
                     }.onSuccess {
-                        payDao.savePay(
-                            Pay(
-                                payType = type,
-                                amount = amount.toInt(),
-                                use = use,
-                                year = current.year.toString(),
-                                month = current.monthValue.toString(),
-                                day = current.dayOfMonth.toString(),
-                                category = it.answer,
-                            )
-                        )
+
                     }.onFailure {
                         Log.d("TEST2", it.toString())
                     }
@@ -101,6 +91,18 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                 CoroutineScope(Dispatchers.IO).launch {
 
                 }
+
+                payDao.savePay(
+                    Pay(
+                        payType = type,
+                        amount = amount.toInt(),
+                        use = use,
+                        year = current.year.toString(),
+                        month = current.monthValue.toString(),
+                        day = current.dayOfMonth.toString(),
+                        category = "sijfisje",
+                    )
+                )
             }
         }
     }
