@@ -71,6 +71,20 @@ class PaymentNotificationListenerService : NotificationListenerService() {
 
                 val current = LocalDateTime.now()
                 CoroutineScope(Dispatchers.IO).launch {
+                    payDao.savePay(
+                        Pay(
+                            payType = type,
+                            amount = amount.toInt(),
+                            use = use,
+                            year = current.year.toString(),
+                            month = current.monthValue.toString(),
+                            day = current.dayOfMonth.toString(),
+                            category = "sijfisje",
+                        )
+                    )
+                }
+
+                /*CoroutineScope(Dispatchers.IO).launch {
                     runCatching {
                         RequestHandler<GptResponse>().request {
                             gptClient.post {
@@ -87,22 +101,7 @@ class PaymentNotificationListenerService : NotificationListenerService() {
                     }.onFailure {
                         Log.d("TEST2", it.toString())
                     }
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-
-                }
-
-                payDao.savePay(
-                    Pay(
-                        payType = type,
-                        amount = amount.toInt(),
-                        use = use,
-                        year = current.year.toString(),
-                        month = current.monthValue.toString(),
-                        day = current.dayOfMonth.toString(),
-                        category = "sijfisje",
-                    )
-                )
+                }*/
             }
         }
     }
